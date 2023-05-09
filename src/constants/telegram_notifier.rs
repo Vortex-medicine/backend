@@ -1,0 +1,2 @@
+pub const TELEGRAM_BOT_TOKEN: &str = "TELEGRAM_BOT_TOKEN";
+pub const TELEGRAM_CHAT_ID: &str = "TELEGRAM_CHAT_ID";
