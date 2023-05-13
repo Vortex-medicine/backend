@@ -1,3 +1,6 @@
+use crate::models::product::{Product, ShortenedProduct};
+use chrono::{DateTime, Utc};
+use mongodb::bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 
 pub type Country = String;
@@ -6,28 +9,28 @@ pub type Address = String;
 pub type Zip = String;
 pub type Warehouse = String;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct NovaposhtaDeliveryKind {
-    city: City,
-    warehouse: Warehouse,
+    pub city: City,
+    pub warehouse: Warehouse,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CourierDeliveryKing {
-    city: City,
-    address: Address,
-    zip: Zip,
+    pub city: City,
+    pub address: Address,
+    pub zip: Zip,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WorldwideDeliveryKing {
-    country: Country,
-    city: City,
-    address: Address,
-    zip: Zip,
+    pub country: Country,
+    pub city: City,
+    pub address: Address,
+    pub zip: Zip,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase", tag = "kind", content = "data")]
 pub enum Delivery {
     Novaposhta(NovaposhtaDeliveryKind),
@@ -35,29 +38,48 @@ pub enum Delivery {
     Worldwide(WorldwideDeliveryKing),
 }
 
-pub type OrderItemId = String;
-pub type OrderItemName = String;
-pub type OrderItemDescr = String;
-pub type OrderItemPrice = f64;
 pub type OrderItemQuantity = u64;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct OrderItem {
-    id: OrderItemId,
-    name: OrderItemName,
-    descr: OrderItemDescr,
-    price: OrderItemPrice,
-    quantity: OrderItemQuantity,
+    pub product_id: String,
+    pub quantity: OrderItemQuantity,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct FullOrderItem {
+    pub product: ShortenedProduct,
+    pub quantity: OrderItemQuantity,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Order {
-    first_name: String,
-    last_name: String,
-    email: String,
-    phone_number: String,
-    delivery: Delivery,
-    ordered_products: Vec<OrderItem>,
+    #[serde(rename = "_id", skip_serializing_if = "Option::is_none")]
+    pub id: Option<ObjectId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub creation_time: Option<DateTime<Utc>>,
+    pub first_name: String,
+    pub last_name: String,
+    pub email: String,
+    pub phone_number: String,
+    pub delivery: Delivery,
+    pub ordered_products: Vec<OrderItem>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct FullOrder {
+    #[serde(rename = "_id", skip_serializing_if = "Option::is_none")]
+    pub id: Option<ObjectId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub creation_time: Option<DateTime<Utc>>,
+    pub first_name: String,
+    pub last_name: String,
+    pub email: String,
+    pub phone_number: String,
+    pub delivery: Delivery,
+    pub ordered_products: Vec<FullOrderItem>,
 }
