@@ -36,7 +36,7 @@ async fn main() {
         .layer(
             CorsLayer::new()
                 .allow_origin("http://localhost:3001".parse::<HeaderValue>().unwrap())
-                .allow_methods([Method::POST])
+                .allow_methods([Method::GET, Method::POST])
                 .allow_headers([http::header::CONTENT_TYPE]),
         )
         .with_state(db);
