@@ -84,12 +84,10 @@ impl OrderRepository for MongoRepository {
 #[async_trait]
 impl ProductRepository for MongoRepository {
     type Product = Product;
-
     async fn get_all_products(&self) -> Result<Vec<Self::Product>> {
         let cursor = self.products.find(None, None).await?;
         Ok(cursor.try_collect().await?)
     }
-
     async fn get_product_by_id(&self, product_id: &str) -> Result<Option<Self::Product>> {
         let obj_id = ObjectId::parse_str(product_id)?;
         let filter = doc! {"_id": obj_id};

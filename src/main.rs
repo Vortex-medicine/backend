@@ -35,7 +35,7 @@ async fn main() {
         .route("/products/:product_id", get(get_product_by_id))
         .layer(
             CorsLayer::new()
-                .allow_origin("http://localhost:3001".parse::<HeaderValue>().unwrap())
+                .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
                 .allow_methods([Method::GET, Method::POST])
                 .allow_headers([http::header::CONTENT_TYPE]),
         )
